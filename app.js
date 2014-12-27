@@ -64,86 +64,84 @@ jsPlumb.ready(function() {
     isTarget: true,
   };
 
-  var init = function(connection) {
-    connection.bind("editCompleted", function(o) {
-      console.log("connection edited. path is now ", o.path);
-    });
-  };
 
+  var argumentList = localStorage.getItem('arguments');
+  argumentList = argumentList ? JSON.parse(argumentList) : [];
+  var connectionList = localStorage.getItem('connections');
+  connectionList = connectionList ? JSON.parse(connectionList) : [];
 
   var renderArgument = function(argument){
-    var currentText = argument.text;
     var argumentId = 'argument'+argument.id;
     var div = document.createElement('div');
     div.id = argumentId;
     div.className = 'window';
-    div.innerHTML = '<strong>'+currentText+'</strong>';
+    div.innerHTML = '<strong>'+argument.text+'</strong>';
     div.style.left = argument.x+'px';
     div.style.top = argument.y+'px';
     div.addEventListener('dblclick', function(){
-      currentText = prompt('Edit the text', currentText);
-      div.innerHTML = '<strong>'+currentText+'</strong>';
+      argument.text = prompt('Edit the text', argument.text);
+      div.innerHTML = '<strong>'+argument.text+'</strong>';
+      localStorage.setItem('arguments', JSON.stringify(argumentList));
     });
     document.getElementById('flowchart-demo').appendChild(div);
-    instance.draggable(div, {grid:  [20, 20], containment:true});
+    instance.draggable(div, {
+      grid: [20, 20],
+      containment:true,
+      stop: function(event){
+        argument.x = event.pos[0];
+        argument.y = event.pos[1];
+        localStorage.setItem('arguments', JSON.stringify(argumentList));
+      },
+    });
     instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'bottom' });
     instance.addEndpoint(argumentId, targetEndpoint, { anchor: 'TopCenter', uuid: argumentId+'top' });
   };
 
   document.getElementById('add-argument').addEventListener('click', function(){
-    var newArgument = {id: 5, x: 10, y: 10, text: 'New argument'};
+    var newArgument = {
+      id: Math.random().toString(36).substring(7),
+      x: 10,
+      y: 10,
+      text: 'New argument',
+    };
+    argumentList.push(newArgument);
+    localStorage.setItem('arguments', JSON.stringify(argumentList));
     renderArgument(newArgument);
   });
 
-  // suspend drawing and initialise.
+
   instance.doWhileSuspended(function() {
-    var arguments = [
-      {id: 1, x: 200, y:  50, text: 'Kernkraft ist gut'},
-      {id: 2, x: 200, y: 150, text: 'Gefahr von Unfall ist groß'},
-      {id: 3, x: 100, y: 260, text: 'Tschernobyl'},
-      {id: 4, x: 300, y: 260, text: 'Fukushima'},
-    ];
-
-    var connections = [
-      [1, 2],
-      [2, 3],
-      [2, 4]
-    ];
-
-    arguments.forEach(function(argument){
+    argumentList.forEach(function(argument){
       renderArgument(argument);
     });
 
-    connections.forEach(function(connection){
+    connectionList.forEach(function(connection){
       var from = 'argument'+connection[0]+'bottom';
       var to = 'argument'+connection[1]+'top';
       instance.connect({uuids: [from, to], editable: true});
     });
 
+   instance.bind("connectionDragStop", function(connection) {
+      function cleanId(id){
+        return id.substring(8, id.length);
+      }
 
-    // listen for new connections; initialise them the same way we initialise the connections at startup.
-    instance.bind("connection", function(connInfo, originalEvent) {
-      init(connInfo.connection);
-    });
+      if(connection.suspendedElementId){
+        var index;
+        connectionList.forEach(function(oldConnection, idx){
+          if(oldConnection[0] === cleanId(connection.sourceId) && oldConnection[1] === cleanId(connection.suspendedElementId)){
+            index = idx;
+          }
+        });
+        connectionList.splice(index, 1);
+      }
 
-    //
-    // listen for clicks on connections, and offer to delete connections on click.
-    //
-    instance.bind("click", function(conn, originalEvent) {
-      if (confirm("Delete connection from " + conn.sourceId + " to " + conn.targetId + "?"))
-        jsPlumb.detach(conn);
-    });
+      if(connection.endpoints){
+        var connection = [cleanId(connection.sourceId), cleanId(connection.targetId)];
+        connectionList.push(connection);
+      }
 
-    instance.bind("connectionDrag", function(connection) {
-      console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);
-    });
-
-    instance.bind("connectionDragStop", function(connection) {
-      console.log("connection " + connection.id + " was dragged");
-    });
-
-    instance.bind("connectionMoved", function(params) {
-      console.log("connection " + params.connection.id + " was moved");
+      localStorage.setItem('connections', JSON.stringify(connectionList));
     });
   });
 
