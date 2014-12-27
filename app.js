@@ -107,11 +107,13 @@ jsPlumb.ready(function() {
     instance.addEndpoint(argumentId, targetEndpoint, { anchor: 'TopCenter', uuid: argumentId+'-top' });
   };
 
+  var lastPosY = 0;
   document.getElementById('add-argument').addEventListener('click', function(){
+    lastPosY = lastPosY > 500 ? 0 : lastPosY+75;
     var newArgument = {
       id: Math.random().toString(36).substring(8),
-      x: 10,
-      y: 10,
+      x: 500,
+      y: lastPosY,
       text: 'New argument',
     };
     argumentList.push(newArgument);
