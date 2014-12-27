@@ -11,8 +11,18 @@
 
   <body data-demo-id="flowchart" data-library="dom">
     <div id="main">
-      <div class="demo flowchart-demo" id="flowchart-demo">
+      <div id="instructions">
+        <ul>
+          <li>Drag & drop arguments to move them.</li>
+          <li>Double click an argument to edit the text.</li>
+          <li>Right click an argument to delete it.</li>
+          <li>Drag a dot on the bottom border of one argument to the dot on the bottom border of another argument to connect them.</li>
+          <li>Arguments are saved in the localStorage of the browser.</li>
+        </ul>
       <button id="add-argument">Add argument</button>
+      </div>
+
+    <div class="demo flowchart-demo" id="flowchart-demo">
       <!-- Arguments -->
       </div>
     </div>
