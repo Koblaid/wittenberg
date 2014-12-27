@@ -72,17 +72,28 @@ jsPlumb.ready(function() {
 
 
   var renderArgument = function(argument){
+    var currentText = argument.text;
     var argumentId = 'argument'+argument.id;
     var div = document.createElement('div');
     div.id = argumentId;
     div.className = 'window';
-    div.innerHTML = '<strong>'+argument.text+'</strong>';
+    div.innerHTML = '<strong>'+currentText+'</strong>';
     div.style.left = argument.x+'px';
     div.style.top = argument.y+'px';
+    div.addEventListener('dblclick', function(){
+      currentText = prompt('Edit the text', currentText);
+      div.innerHTML = '<strong>'+currentText+'</strong>';
+    });
     document.getElementById('flowchart-demo').appendChild(div);
+    instance.draggable(div, {grid:  [20, 20], containment:true});
     instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'bottom' });
     instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'TopCenter', uuid: argumentId+'top' });
   };
+
+  document.getElementById('add-argument').addEventListener('click', function(){
+    var newArgument = {id: 5, x: 10, y: 10, text: 'New argument'};
+    renderArgument(newArgument);
+  });
 
   // suspend drawing and initialise.
   instance.doWhileSuspended(function() {
@@ -114,16 +125,6 @@ jsPlumb.ready(function() {
     instance.bind("connection", function(connInfo, originalEvent) {
       init(connInfo.connection);
     });
-
-    // make all the window divs draggable
-    instance.draggable(jsPlumb.getSelector(".flowchart-demo .window"), {
-      grid:  [20, 20],
-      containment:true,
-    });
-    // THIS DEMO ONLY USES getSelector FOR CONVENIENCE. Use your library's appropriate selector
-    // method, or document.querySelectorAll:
-    //jsPlumb.draggable(document.querySelectorAll(".window"), { grid:  [20, 20] });
-
 
     //
     // listen for clicks on connections, and offer to delete connections on click.
