@@ -28,11 +28,6 @@
   border: 1px dotted red;
 }
 
-#flowchartWindow1 { top: 50px;  left: 500px;}
-#flowchartWindow2 { top: 150px; left: 500px;}
-#flowchartWindow3 { top: 260px; left: 400px; }
-#flowchartWindow4 { top: 260px; left: 600px;}
-
 .flowchart-demo ._jsPlumb_connector {
   z-index: 4;
 }

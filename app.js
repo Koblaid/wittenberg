@@ -70,24 +70,44 @@ jsPlumb.ready(function() {
     });
   };
 
-  var _addEndpoints = function(toId, sourceAnchors, targetAnchors) {
-    for (var i = 0; i < sourceAnchors.length; i++) {
-      var sourceUUID = toId + sourceAnchors[i];
-      instance.addEndpoint("flowchart" + toId, sourceEndpoint, { anchor: sourceAnchors[i], uuid: sourceUUID });
-    }
-    for (var j = 0; j < targetAnchors.length; j++) {
-      var targetUUID = toId + targetAnchors[j];
-      instance.addEndpoint("flowchart" + toId, targetEndpoint, { anchor: targetAnchors[j], uuid: targetUUID });
-    }
+
+  var renderArgument = function(argument){
+    var argumentId = 'argument'+argument.id;
+    var div = document.createElement('div');
+    div.id = argumentId;
+    div.className = 'window';
+    div.innerHTML = '<strong>'+argument.text+'</strong>';
+    div.style.left = argument.x+'px';
+    div.style.top = argument.y+'px';
+    document.getElementById('flowchart-demo').appendChild(div);
+    instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'bottom' });
+    instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'TopCenter', uuid: argumentId+'top' });
   };
 
   // suspend drawing and initialise.
   instance.doWhileSuspended(function() {
+    var arguments = [
+      {id: 1, x: 200, y:  50, text: 'Kernkraft ist gut'},
+      {id: 2, x: 200, y: 150, text: 'Gefahr von Unfall ist groß'},
+      {id: 3, x: 100, y: 260, text: 'Tschernobyl'},
+      {id: 4, x: 300, y: 260, text: 'Fukushima'},
+    ];
 
-    _addEndpoints("Window1", ["BottomCenter"], ["TopCenter"]);
-    _addEndpoints("Window2", ["BottomCenter"], ["TopCenter"]);
-    _addEndpoints("Window3", ["BottomCenter"], ["TopCenter"]);
-    _addEndpoints("Window4", ["BottomCenter"], ["TopCenter"]);
+    var connections = [
+      [1, 2],
+      [2, 3],
+      [2, 4]
+    ];
+
+    arguments.forEach(function(argument){
+      renderArgument(argument);
+    });
+
+    connections.forEach(function(connection){
+      var from = 'argument'+connection[0]+'bottom';
+      var to = 'argument'+connection[1]+'top';
+      instance.connect({uuids: [from, to], editable: true});
+    });
 
 
     // listen for new connections; initialise them the same way we initialise the connections at startup.
@@ -101,11 +121,6 @@ jsPlumb.ready(function() {
     // method, or document.querySelectorAll:
     //jsPlumb.draggable(document.querySelectorAll(".window"), { grid:  [20, 20] });
 
-    // connect a few up
-    instance.connect({uuids: ["Window1BottomCenter", "Window2TopCenter"], editable: true});
-    instance.connect({uuids: ["Window2BottomCenter", "Window3TopCenter"], editable: true});
-    instance.connect({uuids: ["Window2BottomCenter", "Window4TopCenter"], editable: true});
-    //
 
     //
     // listen for clicks on connections, and offer to delete connections on click.
