@@ -122,13 +122,10 @@ jsPlumb.ready(function() {
       }
 
       if(connection.suspendedElementId){
-        var index;
-        connectionList.forEach(function(oldConnection, idx){
-          if(oldConnection[0] === cleanId(connection.sourceId) && oldConnection[1] === cleanId(connection.suspendedElementId)){
-            index = idx;
-          }
+        connectionList = connectionList.filter(function(conn){
+          var isRemovedConnection = conn[0] === cleanId(connection.sourceId) && conn[1] === cleanId(connection.suspendedElementId);
+          return !isRemovedConnection;
         });
-        connectionList.splice(index, 1);
       }
 
       if(connection.endpoints){
