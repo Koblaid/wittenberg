@@ -87,7 +87,7 @@ jsPlumb.ready(function() {
     document.getElementById('flowchart-demo').appendChild(div);
     instance.draggable(div, {grid:  [20, 20], containment:true});
     instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'bottom' });
-    instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'TopCenter', uuid: argumentId+'top' });
+    instance.addEndpoint(argumentId, targetEndpoint, { anchor: 'TopCenter', uuid: argumentId+'top' });
   };
 
   document.getElementById('add-argument').addEventListener('click', function(){
