@@ -1,0 +1,13 @@
+{
+  "name": "wittenberg",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Koblaid/wittenberg",
+  "authors": [
+    "Benjamin Arbogast <benjamin.arbogast@gmail.com>"
+  ],
+  "license": "NONE",
+  "private": true,
+  "dependencies": {
+    "jsplumb": "~1.7.2"
+  }
+}
