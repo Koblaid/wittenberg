@@ -1,10 +1,7 @@
 jsPlumb.ready(function() {
 
   var instance = jsPlumb.getInstance({
-    // default drag options
     DragOptions : { cursor: 'pointer', zIndex: 2000 },
-    // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
-    // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
     ConnectionOverlays :  [
       [ "PlainArrow", {
         location: 1,
@@ -15,7 +12,6 @@ jsPlumb.ready(function() {
     Container: "flowchart-demo"
   });
 
-  // this is the paint style for the connecting lines..
   var connectorPaintStyle = {
     lineWidth: 2,
     strokeStyle: "#61B7CF",
@@ -23,7 +19,6 @@ jsPlumb.ready(function() {
     outlineColor: "white",
     outlineWidth: 2
   };
-  // .. and this is the hover style.
   var connectorHoverStyle = {
     lineWidth: 2,
     strokeStyle: "#216477",
@@ -34,7 +29,7 @@ jsPlumb.ready(function() {
     fillStyle: "#216477",
     strokeStyle: "#216477"
   }
-  // the definition of source endpoints (the small blue ones)
+
   var sourceEndpoint = {
     endpoint: "Dot",
     paintStyle: {
@@ -51,7 +46,7 @@ jsPlumb.ready(function() {
     connectorHoverStyle: connectorHoverStyle,
     dragOptions: {},
   };
-  // the definition of target endpoints (will appear when the user drags a connection)
+
   var targetEndpoint = {
     endpoint: "Dot",
     paintStyle: {
@@ -144,7 +139,4 @@ jsPlumb.ready(function() {
       localStorage.setItem('connections', JSON.stringify(connectionList));
     });
   });
-
-  jsPlumb.fire("jsPlumbDemoLoaded", instance);
-
 });
