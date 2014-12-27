@@ -78,6 +78,21 @@ jsPlumb.ready(function() {
       div.innerHTML = '<strong>'+argument.text+'</strong>';
       localStorage.setItem('arguments', JSON.stringify(argumentList));
     });
+    div.addEventListener('contextmenu', function(e){
+      e.preventDefault();
+      if (confirm('Delete argument "'+argument.text+'?')) {
+        argumentList = argumentList.filter(function(arg){
+          return argument.id !== arg.id;
+        });
+        connectionList = connectionList.filter(function(conn){
+          return (conn[0] !== argument.id & conn[1] !== argument.id);
+        });
+        localStorage.setItem('arguments', JSON.stringify(argumentList));
+        localStorage.setItem('connections', JSON.stringify(connectionList));
+        instance.removeAllEndpoints(argumentId);
+        div.remove();
+      }
+    });
     document.getElementById('flowchart-demo').appendChild(div);
     instance.draggable(div, {
       grid: [20, 20],
