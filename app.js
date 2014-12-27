@@ -66,7 +66,7 @@ jsPlumb.ready(function() {
   connectionList = connectionList ? JSON.parse(connectionList) : [];
 
   var renderArgument = function(argument){
-    var argumentId = 'argument'+argument.id;
+    var argumentId = 'argument-'+argument.id;
     var div = document.createElement('div');
     div.id = argumentId;
     div.className = 'window';
@@ -88,13 +88,13 @@ jsPlumb.ready(function() {
         localStorage.setItem('arguments', JSON.stringify(argumentList));
       },
     });
-    instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'bottom' });
-    instance.addEndpoint(argumentId, targetEndpoint, { anchor: 'TopCenter', uuid: argumentId+'top' });
+    instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'-bottom' });
+    instance.addEndpoint(argumentId, targetEndpoint, { anchor: 'TopCenter', uuid: argumentId+'-top' });
   };
 
   document.getElementById('add-argument').addEventListener('click', function(){
     var newArgument = {
-      id: Math.random().toString(36).substring(7),
+      id: Math.random().toString(36).substring(8),
       x: 10,
       y: 10,
       text: 'New argument',
@@ -111,14 +111,14 @@ jsPlumb.ready(function() {
     });
 
     connectionList.forEach(function(connection){
-      var from = 'argument'+connection[0]+'bottom';
-      var to = 'argument'+connection[1]+'top';
+      var from = 'argument-'+connection[0]+'-bottom';
+      var to = 'argument-'+connection[1]+'-top';
       instance.connect({uuids: [from, to], editable: true});
     });
 
    instance.bind("connectionDragStop", function(connection) {
       function cleanId(id){
-        return id.substring(8, id.length);
+        return id.substring(9, id.length);
       }
 
       if(connection.suspendedElementId){
