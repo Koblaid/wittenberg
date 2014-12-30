@@ -20,8 +20,13 @@
   font-family: helvetica;padding: 0.5em;
   font-size: 0.9em;
   width: 160px;
-  height: 30px;
-  line-height: 30px;
+  height: auto;
+  line-height: 15px;
+}
+
+.argument-content {
+  position: relative;
+	top: 50%;
 }
 
 .flowchart-demo .window:hover {

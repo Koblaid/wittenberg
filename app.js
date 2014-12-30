@@ -70,12 +70,12 @@ jsPlumb.ready(function() {
     var div = document.createElement('div');
     div.id = argumentId;
     div.className = 'window';
-    div.innerHTML = '<strong>'+argument.text+'</strong>';
+    div.innerHTML = '<div class="argument-content">'+argument.text+'</div>';
     div.style.left = argument.x+'px';
     div.style.top = argument.y+'px';
     div.addEventListener('dblclick', function(){
       argument.text = prompt('Edit the text', argument.text);
-      div.innerHTML = '<strong>'+argument.text+'</strong>';
+      div.innerHTML = '<div class="argument-content">'+argument.text+'</div>';
       localStorage.setItem('arguments', JSON.stringify(argumentList));
     });
     div.addEventListener('contextmenu', function(e){
