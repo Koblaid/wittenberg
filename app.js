@@ -178,6 +178,8 @@ jsPlumb.ready(function() {
       argumentList = newState.arguments;
       connectionList = newState.connections;
       instance.doWhileSuspended(renderAll);
+      localStorage.setItem('arguments', JSON.stringify(argumentList));
+      localStorage.setItem('connections', JSON.stringify(connectionList));
     }
   });
 
