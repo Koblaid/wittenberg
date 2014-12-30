@@ -107,6 +107,18 @@ jsPlumb.ready(function() {
     instance.addEndpoint(argumentId, targetEndpoint, { anchor: 'TopCenter', uuid: argumentId+'-top' });
   };
 
+  var renderAll = function(){
+    argumentList.forEach(function(argument){
+      renderArgument(argument);
+    });
+
+    connectionList.forEach(function(connection){
+      var from = 'argument-'+connection[0]+'-bottom';
+      var to = 'argument-'+connection[1]+'-top';
+      instance.connect({uuids: [from, to], editable: true});
+    });
+  };
+
   var lastPosY = 0;
   document.getElementById('add-argument').addEventListener('click', function(){
     lastPosY = lastPosY > 500 ? 0 : lastPosY+75;
@@ -122,16 +134,29 @@ jsPlumb.ready(function() {
   });
 
 
-  instance.doWhileSuspended(function() {
-    argumentList.forEach(function(argument){
-      renderArgument(argument);
-    });
+  document.getElementById('import-export').addEventListener('click', function(){
+    var currentState = {
+      arguments: argumentList,
+      connections: connectionList,
+    };
+    var newState = prompt('Import/export the current arguments', JSON.stringify(currentState));
+    if(newState){
+      newState = JSON.parse(newState);
+      instance.detachEveryConnection();
+      instance.deleteEveryEndpoint();
+      var arguments = document.querySelectorAll('.window');
+      Array.prototype.forEach.call(arguments, function(argument){
+        argument.remove();
+      });
+      argumentList = newState.arguments;
+      connectionList = newState.connections;
+      instance.doWhileSuspended(renderAll);
+    }
+  });
 
-    connectionList.forEach(function(connection){
-      var from = 'argument-'+connection[0]+'-bottom';
-      var to = 'argument-'+connection[1]+'-top';
-      instance.connect({uuids: [from, to], editable: true});
-    });
+
+  instance.doWhileSuspended(function() {
+    renderAll();
 
    instance.bind("connectionDragStop", function(connection) {
       function cleanId(id){
