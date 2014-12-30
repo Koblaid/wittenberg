@@ -93,6 +93,33 @@ jsPlumb.ready(function() {
         div.remove();
       }
     });
+
+    div.addEventListener('click', function(e){
+      var traverse = function(currentArgument, color, direction){
+        var sourceConnIdx = direction === 'down' ? 0 : 1;
+        var targetConnIdx = direction === 'down' ? 1 : 0;
+        connectionList.forEach(function(connection){
+          if(connection[sourceConnIdx] === currentArgument.id){
+            argumentList.forEach(function(arg){
+              if(arg.id === connection[targetConnIdx]){
+                var lowerDiv = document.getElementById('argument-'+arg.id);
+                var newColor = color === 'green' ? 'red' : 'green';
+                lowerDiv.style['background-color'] = newColor;
+                traverse(arg, newColor, direction);
+                if(direction === 'up'){
+                  traverse(arg, newColor, 'down');
+                }
+              }
+            });
+          }
+        });
+      }
+
+      div.style['background-color'] = 'green';
+      traverse(argument, 'green', 'down');
+      traverse(argument, 'green', 'up');
+    });
+
     document.getElementById('flowchart-demo').appendChild(div);
     instance.draggable(div, {
       grid: [20, 20],
