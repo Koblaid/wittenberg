@@ -198,6 +198,8 @@ jsPlumb.ready(function() {
       lastPosY = 0;
       argumentList = [];
       connectionList = [];
+      localStorage.setItem('arguments', JSON.stringify(argumentList));
+      localStorage.setItem('connections', JSON.stringify(connectionList));
     };
   });
 
