@@ -74,9 +74,12 @@ jsPlumb.ready(function() {
     div.style.left = argument.x+'px';
     div.style.top = argument.y+'px';
     div.addEventListener('dblclick', function(){
-      argument.text = prompt('Edit the text', argument.text);
-      div.innerHTML = '<div class="argument-content">'+argument.text+'</div>';
-      localStorage.setItem('arguments', JSON.stringify(argumentList));
+      var newText = prompt('Edit the text', argument.text);
+      if(newText !== null){
+        argument.text = newText;
+        div.innerHTML = '<div class="argument-content">'+argument.text+'</div>';
+        localStorage.setItem('arguments', JSON.stringify(argumentList));
+      }
     });
     div.addEventListener('contextmenu', function(e){
       e.preventDefault();
