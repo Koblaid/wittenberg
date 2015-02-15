@@ -161,6 +161,15 @@ jsPlumb.ready(function() {
   });
 
 
+  function clearAll(){
+    instance.detachEveryConnection();
+    instance.deleteEveryEndpoint();
+    var arguments = document.querySelectorAll('.window');
+    Array.prototype.forEach.call(arguments, function(argument){
+      argument.remove();
+    });
+  }
+
   document.getElementById('import-export').addEventListener('click', function(){
     var currentState = {
       arguments: argumentList,
@@ -169,18 +178,22 @@ jsPlumb.ready(function() {
     var newState = prompt('Import/export the current arguments', JSON.stringify(currentState));
     if(newState){
       newState = JSON.parse(newState);
-      instance.detachEveryConnection();
-      instance.deleteEveryEndpoint();
-      var arguments = document.querySelectorAll('.window');
-      Array.prototype.forEach.call(arguments, function(argument){
-        argument.remove();
-      });
+      clearAll();
       argumentList = newState.arguments;
       connectionList = newState.connections;
       instance.doWhileSuspended(renderAll);
       localStorage.setItem('arguments', JSON.stringify(argumentList));
       localStorage.setItem('connections', JSON.stringify(connectionList));
     }
+  });
+
+
+  document.getElementById('clear').addEventListener('click', function(){
+    var choice = confirm('Are you sure you want to remove all arguments?');
+    if(choice === true){
+      clearAll();
+      lastPosY = 0;
+    };
   });
 
 
