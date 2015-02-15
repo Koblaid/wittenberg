@@ -193,6 +193,8 @@ jsPlumb.ready(function() {
     if(choice === true){
       clearAll();
       lastPosY = 0;
+      argumentList = [];
+      connectionList = [];
     };
   });
 
