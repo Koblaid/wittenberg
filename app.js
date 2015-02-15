@@ -60,6 +60,26 @@ jsPlumb.ready(function() {
   };
 
 
+  instance.bind('connection', function (info, originalEvent) {
+    var connection = info.connection;
+    connection.bind('contextmenu', function(connection, originalEvent) {
+      jsPlumb.detach(connection);
+
+      function cleanId(id){
+        return id.substring(9, id.length);
+      }
+
+      connectionList = connectionList.filter(function(conn){
+        var isRemovedConnection = conn[0] === cleanId(connection.sourceId) && conn[1] === cleanId(connection.targetId);
+        return !isRemovedConnection;
+      });
+      localStorage.setItem('connections', JSON.stringify(connectionList));
+
+      originalEvent.preventDefault();
+    });
+  });
+
+
   var argumentList = localStorage.getItem('arguments');
   argumentList = argumentList ? JSON.parse(argumentList) : [];
   var connectionList = localStorage.getItem('connections');
