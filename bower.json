@@ -8,6 +8,6 @@
   "license": "NONE",
   "private": true,
   "dependencies": {
-    "jsplumb": "~1.7.2"
+    "jsplumb": "~1.7.5"
   }
 }
