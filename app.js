@@ -28,7 +28,7 @@ jsPlumb.ready(function() {
   var endpointHoverStyle = {
     fillStyle: "#216477",
     strokeStyle: "#216477"
-  }
+  };
 
   var sourceEndpoint = {
     endpoint: "Dot",
@@ -136,7 +136,7 @@ jsPlumb.ready(function() {
             });
           }
         });
-      }
+      };
 
       div.style['background-color'] = 'green';
       traverse(argument, 'green', 'down');
@@ -220,7 +220,7 @@ jsPlumb.ready(function() {
       connectionList = [];
       localStorage.setItem('arguments', JSON.stringify(argumentList));
       localStorage.setItem('connections', JSON.stringify(connectionList));
-    };
+    }
   });
 
 

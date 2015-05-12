@@ -17,7 +17,8 @@
   z-index: 20; position: absolute;
   background-color: #eeeeef;
   color: black;
-  font-family: helvetica;padding: 0.5em;
+  font-family: helvetica, sans-serif;
+  padding: 0.5em;
   font-size: 0.9em;
   width: 160px;
   height: auto;
