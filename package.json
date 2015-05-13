@@ -1,0 +1,21 @@
+{
+  "name": "wittenberg",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Koblaid/wittenberg.git"
+  },
+  "author": "Benjamin Arbogast",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Koblaid/wittenberg/issues"
+  },
+  "homepage": "https://github.com/Koblaid/wittenberg",
+  "private": true,
+  "dependencies": {
+    "express": "^4.12.3",
+    "minimist": "^1.1.1",
+    "mongoose": "^4.0.2",
+    "morgan": "^1.5.3"
+  }
+}
