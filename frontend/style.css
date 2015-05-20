@@ -52,4 +52,11 @@
   z-index: 21;cursor: pointer;
 }
 
+.save-container {
+  float: right;
+  text-align: left;
+}
 
+#argument-url {
+  width: 200px;
+}

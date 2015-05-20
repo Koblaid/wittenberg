@@ -73,17 +73,65 @@ jsPlumb.ready(function() {
         var isRemovedConnection = conn[0] === cleanId(connection.sourceId) && conn[1] === cleanId(connection.targetId);
         return !isRemovedConnection;
       });
-      localStorage.setItem('connections', JSON.stringify(connectionList));
+      safe();
 
       originalEvent.preventDefault();
     });
   });
 
+  var argumentList = [];
+  var connectionList = [];
+  if(window.location.pathname.length > 1){
+    var sid = window.location.pathname.substring(1);
+    var r = new XMLHttpRequest();
+    r.open('GET', '/api/discussion/'+sid);
+    r.responseType = 'json';
+    r.onreadystatechange = function(){
+      if (r.readyState === 4){
+        if(r.status === 200){
+          var result = r.response;
+          argumentList = result.arguments;
+          connectionList = result.connections;
+          instance.doWhileSuspended(renderAll);
+          document.getElementById('argument-url').value = window.location.href;
+        } else {
+          return console.log('AJAX error', r.status, r.readyState);
+        }
+      }
+    };
+    r.send();
+  } else {
+    argumentList = localStorage.getItem('arguments');
+    argumentList = argumentList ? JSON.parse(argumentList) : [];
+    connectionList = localStorage.getItem('connections');
+    connectionList = connectionList ? JSON.parse(connectionList) : [];
+  }
 
-  var argumentList = localStorage.getItem('arguments');
-  argumentList = argumentList ? JSON.parse(argumentList) : [];
-  var connectionList = localStorage.getItem('connections');
-  connectionList = connectionList ? JSON.parse(connectionList) : [];
+  var safe = function(callback){
+    if(window.location.pathname.length <= 1){
+      return;
+    }
+    var sid = window.location.pathname.substring(1);
+
+    var data = {
+      arguments: argumentList,
+      connections: connectionList,
+    };
+    var r = new XMLHttpRequest();
+    r.open('PUT', '/api/discussion/'+sid);
+    r.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    r.onreadystatechange = function(){
+      if (r.readyState === 4) {
+        if (r.status === 200) {
+          callback && callback(r.responseText);
+        } else {
+          return console.log('AJAX error', r.status, r.readyState);
+        }
+      }
+    };
+    r.send(JSON.stringify(data));
+  };
+
 
   var renderArgument = function(argument){
     var argumentId = 'argument-'+argument.id;
@@ -98,7 +146,7 @@ jsPlumb.ready(function() {
       if(newText !== null){
         argument.text = newText;
         div.innerHTML = '<div class="argument-content">'+argument.text+'</div>';
-        localStorage.setItem('arguments', JSON.stringify(argumentList));
+        safe();
       }
     });
     div.addEventListener('contextmenu', function(e){
@@ -110,8 +158,7 @@ jsPlumb.ready(function() {
         connectionList = connectionList.filter(function(conn){
           return (conn[0] !== argument.id & conn[1] !== argument.id);
         });
-        localStorage.setItem('arguments', JSON.stringify(argumentList));
-        localStorage.setItem('connections', JSON.stringify(connectionList));
+        safe();
         instance.removeAllEndpoints(argumentId);
         div.remove();
       }
@@ -150,7 +197,7 @@ jsPlumb.ready(function() {
       stop: function(event){
         argument.x = event.pos[0];
         argument.y = event.pos[1];
-        localStorage.setItem('arguments', JSON.stringify(argumentList));
+        safe();
       },
     });
     instance.addEndpoint(argumentId, sourceEndpoint, { anchor: 'BottomCenter', uuid: argumentId+'-bottom' });
@@ -179,7 +226,7 @@ jsPlumb.ready(function() {
       text: 'New argument',
     };
     argumentList.push(newArgument);
-    localStorage.setItem('arguments', JSON.stringify(argumentList));
+    safe();
     renderArgument(newArgument);
   });
 
@@ -205,8 +252,7 @@ jsPlumb.ready(function() {
       argumentList = newState.arguments;
       connectionList = newState.connections;
       instance.doWhileSuspended(renderAll);
-      localStorage.setItem('arguments', JSON.stringify(argumentList));
-      localStorage.setItem('connections', JSON.stringify(connectionList));
+      safe();
     }
   });
 
@@ -218,9 +264,16 @@ jsPlumb.ready(function() {
       lastPosY = 0;
       argumentList = [];
       connectionList = [];
-      localStorage.setItem('arguments', JSON.stringify(argumentList));
-      localStorage.setItem('connections', JSON.stringify(connectionList));
+      safe();
     }
+  });
+
+
+  document.getElementById('save').addEventListener('click', function(){
+    safe(function(responseText){
+      window.history.pushState(responseText, 'Wittenberg', '/' + r.responseText);
+      document.getElementById('argument-url').value = window.location.href;
+    });
   });
 
 
@@ -244,7 +297,7 @@ jsPlumb.ready(function() {
         connectionList.push(connection);
       }
 
-      localStorage.setItem('connections', JSON.stringify(connectionList));
+      safe();
     });
   });
 });
