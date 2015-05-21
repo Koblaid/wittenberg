@@ -1,5 +1,5 @@
 {
-  "mode": "dev", // dev or prod
   "mongodbUrl": "mongodb://localhost/witt-development",
+  "morganLogFormat": "dev", // see https://github.com/expressjs/morgan#predefined-formats
   "port": 3000
 }

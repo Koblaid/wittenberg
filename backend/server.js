@@ -11,9 +11,6 @@ var argv = minimist(process.argv.slice(2));
 var configFilePath = argv['config'] || '../config.json';
 var config = require(configFilePath);
 
-if(config.mode !== 'dev' && config.mode !== 'prod'){
-  throw Error('--mode must be either "dev" or "prod"');
-}
 
 mongoose.connect(config.mongodbUrl, function(err){
   if(err){
@@ -103,9 +100,7 @@ app.get('/:sid', function(req, res){
   res.sendFile('index.html', {root: path.resolve('frontend')});
 });
 
-if(config.mode === 'dev'){
-  app.use(morgan('dev'));
-}
+app.use(morgan(config.morganLogFormat));
 
 var server = app.listen(config.port, function(){
   console.log('Server is listening on port '+server.address().port);
