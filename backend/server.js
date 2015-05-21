@@ -8,13 +8,14 @@ var shortid = require('shortid');
 var bodyParser = require('body-parser');
 
 var argv = minimist(process.argv.slice(2));
+var configFilePath = argv['config'] || '../config.json';
+var config = require(configFilePath);
 
-var mode = argv.mode;
-if(mode !== 'dev' && mode !== 'prod'){
+if(config.mode !== 'dev' && config.mode !== 'prod'){
   throw Error('--mode must be either "dev" or "prod"');
 }
 
-mongoose.connect('mongodb://localhost/witt-development', function(err){
+mongoose.connect(config.mongodbUrl, function(err){
   if(err){
     console.log(err);
   } else {
@@ -102,10 +103,10 @@ app.get('/:sid', function(req, res){
   res.sendFile('index.html', {root: path.resolve('frontend')});
 });
 
-if(mode === 'dev'){
+if(config.mode === 'dev'){
   app.use(morgan('dev'));
 }
 
-var server = app.listen(argv.port || 3000, function(){
+var server = app.listen(config.port, function(){
   console.log('Server is listening on port '+server.address().port);
 });

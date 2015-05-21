@@ -1,0 +1,5 @@
+{
+  "mode": "dev", // dev or prod
+  "mongodbUrl": "mongodb://localhost/witt-development",
+  "port": 3000
+}
